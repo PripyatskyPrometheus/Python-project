@@ -44,9 +44,9 @@ def printim_lines(status):
     file = open('List_Films_' + status + '.txt', 'r')
     lines = file.readlines()
     file.close()
-    j = 0
+    j = 983
 
-    while (j != 1000):
+    while (j != 999):
         for line in lines:
             line = line.strip()
 
@@ -65,20 +65,20 @@ def printim_lines(status):
                 sleep(30)
                 continue
             for review in reviews:
-               num = '/000'
-               if j >= 10 and j < 100:
+                num = '/000'
+                if j >= 10 and j < 100:
                     num = '/00'
-               if j >= 100 and j < 1001:
-                num = '/0'
-               with open('dataset/' + status +  num + str(j) + '.txt', 'a', encoding='utf-8') as file:
-                        name = soup.find(class_='breadcrumbs__link')
-                        text = name.text.strip()
-                        file.write(text + '\n')
-                        file.write(soup.find(class_='sub_title').text)
-                        text_reviews = review.text.strip()
-                        file.write(text_reviews)
-                        print('...........Downland File №', j, '...........')
-               j += 1
+                if j >= 100 and j < 1000:
+                    num = '/000'
+                with open('dataset/' + status + num + str(j) + '.txt', 'a', encoding='utf-8') as file:
+                    name = soup.find(class_='breadcrumbs__link')
+                    text = name.text.strip()
+                    file.write(text + '\n')
+                    file.write(soup.find(class_='sub_title').text)
+                    text_reviews = review.text.strip()
+                    file.write(text_reviews)
+                    print('...........Downland File №', j, '...........')
+                j += 1
                
                 
 def main():
@@ -86,10 +86,10 @@ def main():
     #site_read()
     status = 'bad'
     #new_file(status)
-    printim_lines(status)
+    #printim_lines(status)
     #status = 'good'
     #new_file(status)
-   # printim_lines(status)
+    printim_lines(status)
 
 
 if __name__ == '__main__':
