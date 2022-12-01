@@ -1,3 +1,5 @@
 .venv/
 dataset/
 __pycache__/
+random_number_dataset
+random_number_dataset.csv
