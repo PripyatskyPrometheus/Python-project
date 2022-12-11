@@ -3,4 +3,4 @@ dataset/
 __pycache__/
 random_number_dataset
 *.csv
-dataset_new/
+copy_dataset/
