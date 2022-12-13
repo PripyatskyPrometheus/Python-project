@@ -87,4 +87,4 @@ def run():
 
     Simple_Iterator_2("copy_dataset", "good")
     
-    Simple_Iterator_3("random_number_dataset", "bad")
+    Simple_Iterator_3("random_number_dataset.csv", "bad")
