@@ -1,8 +1,9 @@
 from simpleIterator import SimpleIterator
+from typing import Optional
 
 
-def get_path(file_name, class_name):
-
+def get_path(file_name, class_name) :
+    # получаем и перебираем элементы класса
     i = SimpleIterator(file_name, class_name)
     for val in i:
         if (val != None):
