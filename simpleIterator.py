@@ -5,6 +5,7 @@ from typing import Optional
 
 class Simple_Iterator_1:
 
+    '''Класс итератор, для dataset'''
     #конструктор, где инициализириуем класс и файл
     def __init__(self, file_name: str, class_name: str):
         self.path_ = os.path.join(file_name, class_name)
@@ -29,6 +30,7 @@ class Simple_Iterator_1:
 
 class Simple_Iterator_2:
 
+    '''Класс итератор, для copy_dataset'''
     #конструктор, где инициализириуем класс и файл
     def __init__(self, file_name: str, class_name: str):
         self.class_name = class_name
@@ -58,6 +60,7 @@ class Simple_Iterator_2:
 
 class Simple_Iterator_3:
 
+    '''Класс итератор, для random_dataset.csv'''
     #конструктор, где инициализириуем класс и файл
     def __init__(self, file_name: str, class_name: str):
         self.class_name = class_name

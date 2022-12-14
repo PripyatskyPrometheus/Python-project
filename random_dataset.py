@@ -5,7 +5,9 @@ import random
 from typing import List
 
 
-def add_to_csv_and_to_dataset_random_number(path_dataset, paths_txt):
+def add_to_csv_and_to_dataset_random_number(path_dataset: str, paths_txt: str) -> None:
+    '''Функция создаёт папку для новорй dataset, если её нет, и записывает туда данные без деления на классы со случайными номерами 
+    от 0 о 10 000, после того как запишет их в созданную здесь же файл-аннотацию.'''
 
     name_folder = "random_number_dataset"
     
@@ -33,7 +35,9 @@ def add_to_csv_and_to_dataset_random_number(path_dataset, paths_txt):
             shutil.copyfile(os.path.join(path_dataset, str(paths_txt[i])), os.path.join(path_random_number_dataset, new_name))
 
 
-def find_path_txt(path_dataset) -> List[str]:
+def find_path_txt(path_dataset: str) -> List[str]:
+    '''Функция формирует и возвращает список из путей к текстовым файлам'''
+    
     paths_txt = []
     class_list = ('bad','good')
 

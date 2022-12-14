@@ -3,12 +3,14 @@ import os
 from typing import List
 
 
-def add_in_csv (path_dataset, paths_txt):
-
+def add_in_csv (path_dataset: str, paths_txt: List[str]) -> None:
+    
+    '''Создаёт и записывает файл аннотацию dataseta'''
     #создаём  или открываем файл аннотацию для заполнения
     with open('dataset.csv', 'w+', encoding='utf-8', newline='') as f:
         writer = csv.writer(f, delimiter=' ')
         writer.writerow(["Absolute path", "Relative path", "Class"])
+        
         #проходимся по нашим именам и записываем их в аннотацию
         for i in range (len(paths_txt)):
             class_txt = os.path.join(str(paths_txt[i]))
@@ -19,7 +21,9 @@ def add_in_csv (path_dataset, paths_txt):
                 os.path.join('..', 'dataset', f'{(str(paths_txt[i])).replace(" ","")}'), f'{class_name}'])
 
         
-def find_path_txt (path_dataset) -> List[str]:
+def find_path_txt (path_dataset: str) -> List[str]:
+    '''Функция формирует и возвращает список из путей к текстовым файлам'''
+    
     paths_txt = []
     class_list = ('bad', 'good')
 
