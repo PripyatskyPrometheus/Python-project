@@ -30,7 +30,7 @@ def copy_dataset_new(path_dataset: str, path_txt_old: str, path_txt_new: str) ->
     if not os.path.isdir(name_folder):
         os.mkdir(name_folder)
     #заполняем папку
-    for i in range(1, len(path_txt_old)):
+    for i in range(len(path_txt_old)):
         shutil.copyfile(os.path.join(path_dataset, str(path_txt_old[i])), os.path.join(name_folder, str(path_txt_new[i])))
 
 
@@ -49,6 +49,15 @@ def find_path_txt (path_dataset, delimiter) -> List[str]:
             paths_txt.append(path_txt.replace(" ",""))
     
     return paths_txt
+
+def copy_dataset_add_csv() -> None:
+    """функция, выполняющая копирование в новый dataset и делающая csv-файл к нему"""
+    
+    path_dataset = os.path.abspath('dataset')
+    path_txt_old = find_path_txt(path_dataset, '\\')
+    path_txt_new = find_path_txt(path_dataset, '_')
+    copy_dataset_new(path_dataset, path_txt_old, path_txt_new)
+    add_csv(path_dataset, path_txt_new)
 
 
 if __name__ == "__main__":

@@ -37,6 +37,10 @@ def find_path_txt (path_dataset: str) -> List[str]:
     
     return paths_txt
 
+def Create_csv(path_dataset: str) -> None:
+    '''Вызов функций для поиска путей файлов и создания csv-файла'''
+    paths_txt = find_path_txt(path_dataset)
+    add_in_csv(path_dataset, paths_txt)
 
 if __name__ == "__main__":
     

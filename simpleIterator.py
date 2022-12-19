@@ -1,4 +1,5 @@
 import os
+import re
 import csv
 from typing import Optional
 
@@ -9,8 +10,9 @@ class Simple_Iterator_1:
     #конструктор, где инициализириуем класс и файл
     def __init__(self, file_name: str, class_name: str):
         self.path_ = os.path.join(file_name, class_name)
-        self.names = os.listdir(self.path)
-        for i in self.names:
+        self.names = os.listdir(self.path_)
+        names_ = self.names.copy()
+        for i in names_:
             if not ".txt" in i:
                 self.names.remove(i)
         self.counter = 0
@@ -18,7 +20,13 @@ class Simple_Iterator_1:
     #итератор, возвращаеющий самого себя
     def __iter__(self):
         return self
-    
+
+    def get_number_review(self) -> str:
+        number = re.split(' ', str(self.names[self.counter]))
+        number = str(number[1]).split(' ')
+        number = str(number[6]).split(' ')
+        return number[0]
+
     #получаем следущий элемент
     def __next__(self) -> Optional[str]:
         if self.counter < len(self.names):
@@ -76,7 +84,7 @@ class Simple_Iterator_3:
     #итератор, возвращаеющий самого себя
     def __iter__(self):
         return self
-    
+
     #получаем следущий элемент
     def __next__(self) -> Optional[str]:
         if self.counter < len(self.list):
@@ -86,7 +94,7 @@ class Simple_Iterator_3:
             raise StopIteration
         
 def run():
-    Simple_Iterator_1("dataset", "bad")
+    print(Simple_Iterator_1("dataset", "bad"))
 
     Simple_Iterator_2("copy_dataset", "good")
     
