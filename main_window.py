@@ -1,3 +1,4 @@
+import os
 import sys
 from PyQt5 import QtWidgets, QtCore
 from PyQt5.QtCore import QThread, QObject
@@ -41,6 +42,7 @@ class Example(QWidget):
         self.cout_good = 0
         self.cout_bad = 0
         self.path_dataset = ""
+        self.label = QLabel(self)
         self.initUI()
 
     def Set_Label(self, x: int, y: int, text: str) -> None:
@@ -85,16 +87,18 @@ class Example(QWidget):
         self.Set_Button(1000, 140, 'Создать new_dataset и аннотацию', self.On_Create_Copy_Dataset_Button)
         self.Set_Button(1000, 190, 'Создать random_number_dataset и аннотацию ', self.On_Create_Dataset_Random_Button)
 
-
     def On_Next_Good_Review_Button(self) -> None:
         '''Берём следующий хороший отзыв'''
         if self.path_dataset != "":
           self.it_good = (Simple_Iterator_1(self.path_dataset, 'good'))
         self.Line_Edit_Good.setText((next((self.it_good))))
+        
+        self.Line_Edit_Good.setText((next((self.it_good))))
 
     def On_Next_Bad_Review_Button(self) -> None:
         '''Берём следующий плохой отзыв'''
         if self.path_dataset != "":
+            self.it_good = (Simple_Iterator_1(self.path_dataset, 'bad'))
             path = str(get_path.get_path(self.path_dataset, 'bad', self.cout_bad))
             self.Line_Edit_Bad.setText(get_path.find_review_by_path(path))
             self.cout_bad += 1

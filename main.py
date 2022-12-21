@@ -9,8 +9,8 @@ import os
 #  Создаём папку dataset и её подпапки bad и good
 def create_dir():
     os.mkdir('dataset')
-    os.mkdir(os.join('dataset', 'bad')) # os.join()
-    os.mkdir(os.join('dataset', 'good'))
+    os.mkdir(os.path.join('dataset', 'bad')) # os.join()
+    os.mkdir(os.path.join('dataset', 'good'))
 
 
 def site_read():

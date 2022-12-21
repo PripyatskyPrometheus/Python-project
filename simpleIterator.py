@@ -18,8 +18,8 @@ class Simple_Iterator_1:
         self.counter = 0
 
     #итератор, возвращаеющий самого себя
-    def __iter__(self):
-        return self
+    #def __iter__(self):
+    #    return self
 
     def get_number_review(self) -> str:
         number = re.split(' ', str(self.names[self.counter]))
