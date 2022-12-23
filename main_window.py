@@ -110,6 +110,7 @@ class Example(QWidget):
                 self.review = f.read()
                 self.label.setText(self.review)
 
+
     def On_Create_Csv_Dataset_Button(self) -> None:
         '''Создаём csv-файла dataset'''
         while self.path_dataset == "":
@@ -117,18 +118,20 @@ class Example(QWidget):
             self.path_dataset = 'dataset'
             self.create_csv.start()
 
+
     def On_Create_Copy_Dataset_Button(self) -> None:
         '''Метод для создания сopy_dataset и его csv-файла'''
         if self.path_dataset != "":
             self.create_new_dataset.start()
+
 
     def On_Create_Dataset_Random_Button(self) -> None:
         '''Метод для создания random_number_dataset и его csv-файла'''
         if self.path_dataset != "":
             self.create_random_number_dataset.start()
 
-    def initUI(self) -> None:
 
+    def initUI(self) -> None:
         self.resize(1400, 700)
         self.center()
         self.Set_Widgets()

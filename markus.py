@@ -17,6 +17,7 @@ def pos(word, morth=pymorphy2.MorphAnalyzer()):
 
 
 def strip_words(words: str) -> str:
+    
     words_upd = []
 
     for word in words:
@@ -28,8 +29,7 @@ def strip_words(words: str) -> str:
 
 def lemmatize_for_class_mark(reviews_df: pd.DataFrame, class_mark: str) -> list:
     '''Обрабатываем слова из dataframe по метке класса'''
-    reviews_class_mark_df = filtered_dataframe_class(
-        reviews_df, 'class_mark', class_mark)
+    reviews_class_mark_df = filtered_dataframe_class(reviews_df, 'class_mark', class_mark)
     return lemmatize(reviews_class_mark_df, 'text_review')
 
 
@@ -115,7 +115,7 @@ def list_words(reviews_df: pd.DataFrame,  class_name: str, column_name: str) -> 
     words = []
 
     for i in range(len(reviews_df.index)):
-        if reviews_df['Метка класса'][i] == class_name:
+        if reviews_df['class_mark'][i] == class_name:
             text = reviews_df.iloc[i]
             text = text[column_name]
             text = text.replace("\n", ' ')
@@ -153,8 +153,7 @@ def count_words_in_text(reviews_df: pd.DataFrame, column_name: str) -> list:
         text = reviews_df.iloc[i]
         text = text[column_name]
         text = text.replace("\n", " ")
-        text = text.replace(",", "").replace(
-            ".", "").replace("?", "").replace("!", "").replace("'", "")
+        text = text.replace(",", "").replace(".", "").replace("?", "").replace("!", "").replace("'", "")
         text = text.lower()
         words = text.split()
         words.sort()
@@ -179,10 +178,8 @@ def main():
     filtered_reviews_df = filtered_dataframe_word(
         reviews_df, column_name[2], 100)
     print(filtered_reviews_df)
-    reviews_good_df = filtered_dataframe_class(
-        reviews_df, column_name[0], 'good')
-    reviews_bad_df = filtered_dataframe_class(
-        reviews_df, column_name[0], 'bad')
+    reviews_good_df = filtered_dataframe_class(reviews_df, column_name[0], 'good')
+    reviews_bad_df = filtered_dataframe_class( reviews_df, column_name[0], 'bad')
     print(reviews_bad_df)
     print(reviews_good_df)
 
@@ -198,30 +195,6 @@ def main():
     print('Максимальное кол-во слов:', stat_bad['max'])
     print('Среднее кол-во слов:', stat_bad['mean'])
 
-async def print1(str1: str):
-    for i in range(100):
-        print(str1 + str(i))
-        await asyncio.sleep(1)
-
-
-async def asynxron(reviews_df, column_name, output_lemma_1, output_lemma_2, loop):
-
-    task1 = loop.create_task(lemmatizer_list(reviews_df, column_name[1],  'good', 81, 82, output_lemma_1))
-    task2 = loop.create_task(lemmatizer_list(reviews_df, column_name[1],  'good', 660, 661, output_lemma_2))
-    await asyncio.wait([task1, task2])
-
-
-async def dasad(reviews_df, column_name):
-    output_lemma_1 = []
-    output_lemma_2 = []
-    try:
-        loop = asyncio.get_event_loop()
-        loop.run_until_complete(
-            asynxron(reviews_df, column_name, output_lemma_1, output_lemma_2, loop))
-    except:
-        pass
-    return output_lemma_1 + output_lemma_2
-
 
 if __name__ == "__main__":
     main()
@@ -229,6 +202,8 @@ if __name__ == "__main__":
     reviews_df = add_to_dataframe()
 
     words = list_words(reviews_df, 'good', column_name[1])
-    lemma_word = lemmatizer_list(reviews_df, column_name[1],  'good')
-    #words = listtt(reviews_df, column_name[1],  'good')
+    #lemma_word = lemmatizer_list(reviews_df, column_name[1],  'good')
     word_list = lemmatize_for_class_mark(reviews_df, 'good')
+    
+    
+    
