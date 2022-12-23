@@ -14,7 +14,7 @@ def get_path(file_name: str, class_name: str, index: int) -> Optional[str]:
 
 def find_review_by_path(path_txt: str) -> str:
     text = ''
-    with open('dataset', 'r', encoding='utf-8') as file:
+    with open(path_txt, 'r', encoding='utf-8') as file:
         for item in file:
             text += item
     return text

@@ -1,13 +1,11 @@
 import os
 import sys
+import codecs
 from PyQt5 import QtWidgets, QtCore
 from PyQt5.QtCore import QThread, QObject
-from PyQt5.QtWidgets import QApplication, QLabel, QPushButton, QWidget, QFileDialog, QMessageBox, QDesktopWidget, QTextEdit
-from PyQt5.QtGui import QIcon, QPixmap
-from PyQt5 import QtWidgets, QtCore
-from PyQt5.QtWidgets import (QApplication, QLabel, QPushButton, QWidget,
-                             QFileDialog, QMessageBox, QDesktopWidget, QVBoxLayout)
-from PyQt5.QtGui import QPixmap
+from PyQt5.QtWidgets import QApplication, QLabel, QPushButton, QWidget, QFileDialog, QMessageBox, QDesktopWidget, QTextEdit, QHBoxLayout, QVBoxLayout, QTabWidget
+from PyQt5.QtGui import QIcon, QFont
+
 import work
 import copy_dataset
 import random_dataset
@@ -31,16 +29,22 @@ class CreateDatasetRandom(QThread):
     def run(self):
         random_dataset.copy_dataset_random_add_csv()
 
+class CreateSCV(QThread):
+    def __init__(self, parent: typing.Optional[QObject]) -> None:
+        super().__init__(parent)
+
+    def run(self):
+        work.create_csv()
+
 
 class Example(QWidget):
-
     def __init__(self):
         super().__init__()
-
+        self.create_csv = CreateSCV(self)
         self.create_new_dataset = CreateDataset(self)
         self.create_random_number_dataset = CreateDatasetRandom(self)
-        self.cout_good = 0
-        self.cout_bad = 0
+        self.iterator_good = Simple_Iterator_1(os.path.abspath('dataset'), "good")
+        self.iterator_bad = Simple_Iterator_1(os.path.abspath('dataset'), "bad")
         self.path_dataset = ""
         self.label = QLabel(self)
         self.initUI()
@@ -71,7 +75,7 @@ class Example(QWidget):
         return btn
 
     def Set_Widgets(self) -> None:
-        '''Показываем товар(виджеты) лицом'''
+        '''Показываем кнопки и передаём им функции лицом'''
 
         self.Set_Label(150, 50, 'Хороший отзыв')
         self.Set_Label(700, 50, 'Плохой отзыв')
@@ -79,36 +83,39 @@ class Example(QWidget):
         self.Line_Edit_Good = self.Set_LineEdit(50, 90)
         self.Line_Edit_Bad = self.Set_LineEdit(500, 90)
 
-        self.Set_Button(100, 610, 'Посмотреть следующий хороший отзыв', self.On_Next_Good_Review_Button)
+        self.Set_Button(100, 610, 'Посмотреть следующий хороший отзыв', self.On_Next_Good)
 
-        self.Set_Button(610, 610, 'Посмотреть следующий плохой отзыв', self.On_Next_Bad_Review_Button)
+        self.Set_Button(610, 610, 'Посмотреть следующий плохой отзыв', self.On_Next_Bad)
 
         self.Set_Button(1000, 90, 'Создать аннотацию для dataset', self.On_Create_Csv_Dataset_Button)
         self.Set_Button(1000, 140, 'Создать new_dataset и аннотацию', self.On_Create_Copy_Dataset_Button)
         self.Set_Button(1000, 190, 'Создать random_number_dataset и аннотацию ', self.On_Create_Dataset_Random_Button)
 
-    def On_Next_Good_Review_Button(self) -> None:
+    def On_Next_Good(self) -> None:
         '''Берём следующий хороший отзыв'''
-        if self.path_dataset != "":
-          self.it_good = (Simple_Iterator_1(self.path_dataset, 'good'))
-        self.Line_Edit_Good.setText((next((self.it_good))))
-        
-        self.Line_Edit_Good.setText((next((self.it_good))))
+        if self.path_dataset != '':
+            
+            new =  self.iterator_good.__next__()
+            print(new)
+            with open(new, 'r', 'utf-8') as f:
+                self.review = f.read()
+                self.label.setText(self.review)
 
-    def On_Next_Bad_Review_Button(self) -> None:
+    def On_Next_Bad(self) -> None:
         '''Берём следующий плохой отзыв'''
-        if self.path_dataset != "":
-            self.it_good = (Simple_Iterator_1(self.path_dataset, 'bad'))
-            path = str(get_path.get_path(self.path_dataset, 'bad', self.cout_bad))
-            self.Line_Edit_Bad.setText(get_path.find_review_by_path(path))
-            self.cout_bad += 1
-
+        if self.path_dataset != '':
+            new = self.iterator_bad.__next__()
+            print(new)
+            with open(new, 'r', 'utf-8') as f:
+                self.review = f.read()
+                self.label.setText(self.review)
 
     def On_Create_Csv_Dataset_Button(self) -> None:
         '''Создаём csv-файла dataset'''
         while self.path_dataset == "":
-            self.path_dataset = QtWidgets.QFileDialog.getExistingDirectory(self, 'Выберите папку исходного dataset')
-        work.Create_csv(self.path_dataset)
+            self.folderpath = QtWidgets.QFileDialog.getExistingDirectory(self, 'Выберите папку исходного dataset')
+            self.path_dataset = 'dataset'
+            self.create_csv.start()
 
     def On_Create_Copy_Dataset_Button(self) -> None:
         '''Метод для создания сopy_dataset и его csv-файла'''
@@ -126,8 +133,8 @@ class Example(QWidget):
         self.center()
         self.Set_Widgets()
         self.msg = QMessageBox()
-        self.setWindowTitle('Отзывы')
-        self.setWindowIcon(QIcon('web.png'))
+
+        self.setWindowIcon(QIcon('.text'))
 
     def center(self) -> None:
 
