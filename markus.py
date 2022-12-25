@@ -2,13 +2,15 @@ from nltk.stem import WordNetLemmatizer
 import pandas as pd
 import csv
 import os
+import numpy as np
 import os.path
 import pymorphy2
 import regex as re
 from nltk.corpus import stopwords
 from pymystem3 import Mystem
-import asyncio
+from matplotlib import pyplot as plt
 import matplotlib.pyplot as plt
+import string
 
 
 def pos(word, morth=pymorphy2.MorphAnalyzer()):
@@ -44,7 +46,7 @@ def lemmatize(reviews_df: pd.DataFrame, column_name: str) -> list:
         words = text.split()
         words = strip_words(words)
 
-        for i in range(0, len(words)):
+        for i in range(len(words)):
             text_nomalized += words[i]
             text_nomalized += ' '
 
@@ -55,14 +57,14 @@ def lemmatize(reviews_df: pd.DataFrame, column_name: str) -> list:
     return lemmas_res
 
 
-def lemmatizer_list(reviews_df: pd.DataFrame, column_name: str, class_name: str, begin: int, end: int) -> list:
+def lemmatizer_list(reviews_df: pd.DataFrame, column_name: str, class_name: str) -> list:
     '''лемматизация слов по метке класса'''
     output_lemma = []
     stopwords_ru = stopwords.words("russian")
     lemma = pymorphy2.MorphAnalyzer()
 
     functors_pos = {'CONJ', 'PREP', 'NPRO', 'PRCL'}
-    for i in range(begin, end):
+    for i in range(len(reviews_df)):
         if reviews_df['class_mark'][i] == class_name:
 
             for word in reviews_df[column_name][i].split():
@@ -76,7 +78,7 @@ def lemmatizer_list(reviews_df: pd.DataFrame, column_name: str, class_name: str,
 
 def add_to_list(txt_name: list, text_reviews: list, name_class: list) -> list:
     '''возвращает два списка: один с отзывами, другой с меткой класса'''
-    for i in range(0, 2000):
+    for i in range(2000):
 
         with open(txt_name[i], 'r', encoding='utf-8') as f:
             data = f.read()
@@ -95,8 +97,8 @@ def add_to_dataframe() -> pd.DataFrame:
     txt_name = []
     data_dict = {}
 
-    with open(filename, encoding="utf-8") as file:
-        reader = csv.reader(file, delimiter=' ')
+    with open(filename, encoding="utf-8") as f:
+        reader = csv.reader(f, delimiter=' ')
         for row in reader:
             if row[1] != 'Relative path':
                 txt_name.append(str(row[1])[3:])
@@ -130,7 +132,7 @@ def list_words(reviews_df: pd.DataFrame,  class_name: str, column_name: str) -> 
 
 
 def statistical_information(reviews_df: pd.DataFrame, column_name: str) -> pd.Series:
-    '''возвращаем статистическую информацию о столбце'''
+    '''возвращаем статистическую информацию 0 столбце'''
     return reviews_df[column_name].describe()
 
 
@@ -161,9 +163,10 @@ def count_words_in_text(reviews_df: pd.DataFrame, column_name: str) -> list:
     return count_words
 
 
-def check_nan(reviews_df: pd.DataFrame, column_name: str) -> bool:
+def check_nan(reviews_df: pd.DataFrame, column_name:str) -> bool:
     '''Проверяем на пустоту в dataframe'''
     return reviews_df[column_name].isnull().values.any()
+
 
 
 def main():
@@ -178,6 +181,7 @@ def main():
     filtered_reviews_df = filtered_dataframe_word(
         reviews_df, column_name[2], 100)
     print(filtered_reviews_df)
+    reviews_df.to_csv('dataframe.csv')
     reviews_good_df = filtered_dataframe_class(reviews_df, column_name[0], 'good')
     reviews_bad_df = filtered_dataframe_class( reviews_df, column_name[0], 'bad')
     print(reviews_bad_df)
@@ -194,16 +198,51 @@ def main():
     print('Минимальное кол-во слов:', stat_bad['min'])
     print('Максимальное кол-во слов:', stat_bad['max'])
     print('Среднее кол-во слов:', stat_bad['mean'])
+        
+
+def lemmatize(text) -> list:
+    morph = pymorphy2.MorphAnalyzer()
+    new_list = []
+    table = str.maketrans(dict.fromkeys(string.punctuation))
+    elem = text.translate(table)
+    if elem is not None:
+        list_words = elem.split()
+    for word in list_words:
+        p = morph.parse(word)[0]
+        new_list.append(p.normal_form)
+    return new_list
+
+def create_histogram(reviews_df: pd.DataFrame, label: str) -> plt.Figure:
+
+    dict = {}
+    list = []
+    reviews_df = reviews_df[reviews_df['class_mark'] == label][['text_review']]
+    for text in reviews_df['text_review']:
+        list_new = lemmatize(text)
+    for word in list_new:
+        if word not in dict.keys():
+            dict[word] = list_new.count(word)
+            list.append(list_new.count(word))
+    return list, dict
 
 
 if __name__ == "__main__":
     main()
+   
     column_name = ['class_mark', 'text_review', 'count_words']
     reviews_df = add_to_dataframe()
 
-    words = list_words(reviews_df, 'good', column_name[1])
-    #lemma_word = lemmatizer_list(reviews_df, column_name[1],  'good')
-    word_list = lemmatize_for_class_mark(reviews_df, 'good')
-    
-    
-    
+    list, dict = create_histogram(reviews_df, 'good')
+
+    plt.figure(figsize=(30, 10))
+    plt.ylabel('Количество слов')
+    plt.title('Гистограмма')
+
+    new = []
+    for elem in dict:
+        print(elem)
+        new.append(elem)
+    plt.hist(list[:20], bins=len(list), color='blue', edgecolor='black')
+    plt.xticks(np.arange(len(list[:20])), new[:20], rotation=90, horizontalalignment='left')
+
+    plt.show()

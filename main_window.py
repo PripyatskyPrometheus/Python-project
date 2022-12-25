@@ -1,15 +1,12 @@
 import os
 import sys
-import codecs
 from PyQt5 import QtWidgets, QtCore
 from PyQt5.QtCore import QThread, QObject
 from PyQt5.QtWidgets import QApplication, QLabel, QPushButton, QWidget, QFileDialog, QMessageBox, QDesktopWidget, QTextEdit, QHBoxLayout, QVBoxLayout, QTabWidget
-from PyQt5.QtGui import QIcon, QFont
-
+from PyQt5.QtGui import QIcon
 import work
 import copy_dataset
 import random_dataset
-import get_path
 from simpleIterator import Simple_Iterator_1
 import typing
 
@@ -35,7 +32,6 @@ class CreateSCV(QThread):
 
     def run(self):
         work.create_csv()
-
 
 class Example(QWidget):
     def __init__(self):
@@ -93,23 +89,22 @@ class Example(QWidget):
 
     def On_Next_Good(self) -> None:
         '''Берём следующий хороший отзыв'''
-        if self.path_dataset != '':
-            
-            new =  self.iterator_good.__next__()
-            print(new)
-            with open(new, 'r', 'utf-8') as f:
+        if self.path_dataset != '':   
+            n =  self.iterator_good.__next__()
+            with open(n, 'r', encoding='utf-8') as f:
                 self.review = f.read()
-                self.label.setText(self.review)
+                self.Line_Edit_Good.setText(self.review)
+            
 
     def On_Next_Bad(self) -> None:
         '''Берём следующий плохой отзыв'''
         if self.path_dataset != '':
-            new = self.iterator_bad.__next__()
-            print(new)
-            with open(new, 'r', 'utf-8') as f:
+            n = self.iterator_bad.__next__()
+            print(n, type(n))
+            with open(n, 'r', encoding='utf-8') as f:
                 self.review = f.read()
-                self.label.setText(self.review)
-
+                print(self.review)
+                self.Line_Edit_Bad.setText(self.review)
 
     def On_Create_Csv_Dataset_Button(self) -> None:
         '''Создаём csv-файла dataset'''
